@@ -5,8 +5,8 @@ using namespace sf;
 using namespace std;
 
 int main() {
-	string background = "images1/backgrounds/winter.png";
-	string foreground = "images1/characters/yoda.png";
+	string background = "images1/backgrounds/prague.png";
+	string foreground = "images1/characters/Rey_green_screen.png";
 
 	Texture backgroundTex;
 	if (!backgroundTex.loadFromFile(background)) {
@@ -24,13 +24,21 @@ int main() {
 	Image foregroundImage;
 	foregroundImage = foregroundTex.copyToImage();
 
+	Color greenScreen = foregroundImage.getPixel(0, 0); // Because the green screen is all one color we sample it from the top left corner
+
 	Vector2u sz = backgroundImage.getSize();
+
 	for (int y = 0; y < sz.y; y++) {
 		for (int x = 0; x < sz.x; x++) {
 			// These two loops will run the code inside for each pixel in the background image
 				// You can access the current pixel at x,y like so: 
-				Color example = foregroundImage.getPixel(x, y);
+				Color currentPixel = foregroundImage.getPixel(x, y);
 			// Color objects store the individual channel values like example.r example.g and example.b
+
+				if (currentPixel == greenScreen) { // If the current foreground pixel is the green screen
+					Color backgroundPixel = backgroundImage.getPixel(x, y); // Get the color of the background and replace the foreground with it
+					foregroundImage.setPixel(x, y, backgroundPixel);
+			}
 		}
 	}
 
